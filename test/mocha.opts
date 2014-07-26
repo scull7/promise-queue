@@ -1,0 +1,5 @@
+--require expect.js
+--require should
+--ui bdd
+--compilers coffee:coffee-script/register
+--reporter spec
