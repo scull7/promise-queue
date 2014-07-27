@@ -55,7 +55,9 @@ exports.queue = function (key, task, ttl) {
 exports.task = function (work) {
   var promise = new Promise(function (resolve, reject) {
     work(function (err, res) {
-      if (err) return reject(err)
+      if (err) {
+        return reject(err);
+      }
       // @TODO: Enable multiple arguments.
       return resolve(res);
     });
