@@ -1,8 +1,19 @@
 /*global exports, require*/
 
 var Promise = require('promise'),
-    cache   = {}
+    cache   = require(__dirname + '/lib/cache')
 ;
+// `setCache`
+// ----------
+// Allow the user to override the internal caching
+// mechanism.
+// @param {Cache} new_cache
+// @return {void}
+// @api {public}
+exports.setCache = function (new_cache) {
+  cache = new_cache;
+};
+
 // `Promise Queue`
 // ---------------
 // This is a pipeline queue implementation that uses
@@ -13,27 +24,24 @@ var Promise = require('promise'),
 // @return {Promise}
 // @api {public}
 exports.queue = function (key, task, ttl) {
-  var cached  = cache[key],
-      now     = (new Date()).getTime(),
-      promise = null
+  var cached  = cache.get(key),
+      promise = null,
+      handler = function clear () { cache.del(key); }
   ;
 
-  if (cached && (now - cached.timestamp) >= cached.ttl ) {
-    promise = cached.promise;
+  if (cached && cached.isValid()) {
+    promise = cached.getValue();
   } else {
 
-    if (!(task instanceof Promise)) {
+    if (! (task instanceof Promise) ) {
       promise = exports.task(task);
     } else {
       promise = task;
     }
-
-    cache[key] = {
-      'promise': promise,
-      'ttl': ttl || -1,
-      'timestamp': now
-    };
+    promise = promise.then(handler, handler);
+    cache.set(key, promise, ttl);
   }
+
   return promise;
 };
 
