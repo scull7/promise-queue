@@ -4,4 +4,4 @@ node_js:
   - "0.10"
 after_script:
   - "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
-
+  - CODECLIMATE_REPO_TOKEN=4bee9fa9df9f7de754e24ac223f6c28071d65443c52e1621253c6f5e0f485c81 ./node_modules/.bin/codeclimate < ./coverage/lcov.info

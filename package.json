@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "chai": "^1.9.1",
+    "codeclimate-test-reporter": "0.0.3",
     "coffee-script": "^1.7.1",
     "coveralls": "^2.11.1",
     "expect.js": "^0.3.1",
